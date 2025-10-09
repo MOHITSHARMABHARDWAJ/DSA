@@ -1,36 +1,29 @@
-#include <vector>
-#include <algorithm>
-using namespace std;
-
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        int left = 0;
-        int right = nums.size() - 1;
-        int target = nums.size() - k;  
-
-        while (true) {
-            int pivotIndex = partition(nums, left, right);
-            if (pivotIndex == target)
-                return nums[pivotIndex];
-            else if (pivotIndex < target)
-                left = pivotIndex + 1;   
-            else
-                right = pivotIndex - 1;  
-        }
+        return quick_select(nums,k);
     }
 
-private:
-    int partition(vector<int>& nums, int left, int right) {
-        int pivot = nums[right];
-        int i = left;
-        for (int j = left; j < right; j++) {
-            if (nums[j] < pivot) {
-                swap(nums[i], nums[j]);
-                i++;
-            }
+    int quick_select(vector<int>& nums, int k)
+    {
+        vector<int> left;
+        vector<int> middle;
+        vector<int> right;
+
+        int pivot = nums[rand()% nums.size()];
+        for(int& num: nums)
+        {
+            if (num > pivot)
+                left.push_back(num);
+            else if (num < pivot)
+                right.push_back(num);
+            else
+                middle.push_back(num);
         }
-        swap(nums[i], nums[right]);
-        return i; 
+        if (k<=left.size())
+            return quick_select(left, k);
+        else if (k > left.size() + middle.size())
+            return quick_select(right, k - left.size() - middle.size());
+        return pivot;
     }
 };
